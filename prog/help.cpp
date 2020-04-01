@@ -38,7 +38,6 @@ public:
         :    base_(base)
     {}
 
-
     void operator()(const std::vector<int>& inp) {
         std::string sep;
         for (int i: inp) {
@@ -97,7 +96,23 @@ public:
     {}
 
     void operator()(const std::vector<int>& inp) {
-        std::cout << (std::max(inp[0], inp[1]) + 1) % base_;
+        std::cout << (std::max(inp[0],inp[1]) + 1) % base_;
+    }
+};
+
+
+class FullFunc {
+private:
+    int base_;
+public:
+    FullFunc(int base)
+        :   base_(base)
+    {}
+
+    void operator()(const std::vector<int>& inp) {
+        std::cout << base_ - 1 << '\t' <<
+                    (inp[0] - inp[1] ? inp[0] > inp[1] : 0) << '\t' <<
+                    (inp[0] + inp[1]) % base_;
     }
 };
 
@@ -107,6 +122,6 @@ int main(int argc, char* argv[]) {
     int vars = atoi(argv[2]);
     std::vector<int> inp;
     //dispatcher(base, vars, inp, SetPrinter(base), LinFunc(base, vars));
-    dispatcher(base, vars, inp, SetPrinter(base), WebbFunc(base));
+    dispatcher(base, vars, inp, SetPrinter(base), FullFunc(base));
     return 0;
 }
