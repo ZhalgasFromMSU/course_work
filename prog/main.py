@@ -1,5 +1,6 @@
 from collections import defaultdict
 from itertools import combinations
+from operator import itemgetter
 
 
 var_list = list()
@@ -34,15 +35,16 @@ def is_secure(acc_dict):
 
 
 def print_res(func_list):
-    for i, *j in zip(var_list, *func_list[0]):
+    if not func_list:
+        return
+    for i, *j in zip(var_list, *map(itemgetter(0), func_list)):
         print(' '.join(i), *j, sep='\t')
 
 
 def main():
     func_list = read_sep()
-    comb = combinations(func_list, 3)
-    ans = [func for func in comb if not is_secure(get_acc_dict(func))]
-    print_res(ans)
+    print_res([func for func in combinations(func_list, 1) if not is_secure(get_acc_dict(func))])
+    #print_res([func for func in combinations(func_list, 3) if not is_secure(get_acc_dict(func))])
 
 
 if __name__ == "__main__":
