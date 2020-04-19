@@ -34,17 +34,32 @@ def is_secure(acc_dict):
     return True 
 
 
+def has_uniq(acc_dict):
+    for val in acc_dict.values():
+        if len(val) == 1:
+            return True
+    return False
+
+
 def print_res(func_list):
+    print(len(func_list))
     if not func_list:
         return
-    for i, *j in zip(var_list, *map(itemgetter(0), func_list)):
-        print(' '.join(i), *j, sep='\t')
+    for var in zip(*var_list):
+        print(' '.join(var))
+    print('____________________________________\n')
+    for j in map(itemgetter(0), func_list):
+        print(' '.join(j), end='\n\n')
 
 
 def main():
     func_list = read_sep()
     print_res([func for func in combinations(func_list, 1) if not is_secure(get_acc_dict(func))])
-    #print_res([func for func in combinations(func_list, 3) if not is_secure(get_acc_dict(func))])
+    """
+    print_res([func for func in combinations(func_list, 1) if not is_secure(get_acc_dict(func)) and not has_uniq(get_acc_dict(func))])
+    print('\n______________\n')
+    print_res([func for func in combinations(func_list, 1) if not is_secure(get_acc_dict(func)) and has_uniq(get_acc_dict(func))])
+    """
 
 
 if __name__ == "__main__":
