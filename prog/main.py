@@ -57,10 +57,8 @@ def print_res(func_list):
 def main():
     func_list = read_sep()
     #print_res([func for func in combinations(func_list, 2) if not is_secure(get_acc_dict(func))])
-    print_res(func for func in combinations(func_list, 1) if (not is_secure(get_acc_dict(func))
-        #and is_secure(get_acc_dict([func[0]]))
-    ))
-
+    #print_res(func for func in combinations(func_list, 1) if is_secure(get_acc_dict(func)))
+    print_res(func for func in combinations(func_list, 1))
 
 if __name__ == "__main__":
     main()
