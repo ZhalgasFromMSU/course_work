@@ -6,7 +6,7 @@
 
 class Timer {
 
-    using TStamp = std::chrono::high_resolution_clocl::time_point;
+    using TStamp = std::chrono::high_resolution_clock::time_point;
 
 private:
     TStamp begin_, end_;
@@ -23,6 +23,6 @@ public:
 
 
     auto Count() const {
-        return std::chrono::duration_cast<std::chrono::nanoseconds>(eng - begin).count();
+        return std::chrono::duration_cast<std::chrono::nanoseconds>(end_ - begin_).count();
     }
 };
