@@ -1,5 +1,6 @@
 #include "trits.h"
 #include "time.h"
+#include "finite_field.h"
 
 #include <iostream>
 #include <vector>
@@ -18,12 +19,9 @@ void print(const T& a) {
 
 
 int main() {
-    Converter conv;
-    std::vector<TNum> bin {0, 1, 1, 0, 0, 0, 1, 0};
-    std::vector<TNum> out(6);
-
-    Converter::ConvertFromBase(bin, out);
-
-    print(out);
+    GF<int, 3> a(1235), b(a * 123454231);
+    decltype(b.normal()) c(3);
+    c.asd();
+    std::cout << a + b << '\n';
     return 0;
 }

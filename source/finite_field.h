@@ -3,17 +3,18 @@
 #include <iostream>
 
 
-template<int N = 3>
+template<typename T, int N = 3>
 class GF;
 
 
-template<int N>
-std::ostream& operator<<(std::ostream& out, const GF<N>& cur) {
+
+template<typename T, int N>
+std::ostream& operator<<(std::ostream& out, const GF<T, N>& cur) {
     return out << cur.val;
 }
 
 
-template<int N>
+template<typename T, int N>
 class GF {
 private:
     int val;
@@ -27,34 +28,60 @@ public:
         :   val(a) {
     }
 
-    GF<N> operator+(const GF<N>& other) const {
-        int ret = val + other.val;
-        if (ret >= 0) {
-            ret = ret % N;
+    GF& normalize() {
+        if (val >= 0) {
+            val %= N;
         } else {
-            ret = (N - 1) + (ret + 1) % N;
+            val = (N - 1) + (val + 1) % N;
         }
-        return GF<N>(ret);
+        return *this;
     }
 
-    GF<N> operator-() const {
-        return GF<N>(-val);
+    
+    GF normal() const {
+        GF ret = *this;
+        return ret.normalize();
     }
 
-    GF<N> operator-(const GF<N>& other) const {
+    GF& operator=(const GF& other) {
+        val = other.val;
+        return *this;
+    }
+
+    GF operator+(const GF& other) const {
+        int ret = val + other.val;
+        return GF(ret).normal();
+    }
+
+    GF operator-() const {
+        return GF(-val);
+    }
+
+    GF operator-(const GF& other) const {
         return *this + (-other);
     }
 
-    GF<N> operator*(const GF<N>& other) const {
-        int ret = val * other.val;
-        if (ret >= 0) {
-            ret %= N;
-        } else {
-            ret = (N - 1) + (ret + 1) % N;
-        }
-        return GF<N>(ret);
+    GF operator*(const GF& other) const {
+        int ret = (*this).normal().val * other.normal().val;
+        return GF(ret).normal();
     }
 
-    friend std::ostream& operator<< <>(std::ostream& out, const GF<N>& cur);
+    GF& operator+=(const GF& other) {
+        return *this = *this + other;
+    }
+
+    GF& operator-=(const GF& other) {
+        return *this = *this - other;
+    }
+    
+    GF& operator*=(const GF& other) {
+        return *this = *this * other;
+    }
+
+    bool operator==(const GF& other) const {
+        return val == other.val;
+    }
+
+    friend std::ostream& operator<< <>(std::ostream& out, const GF& cur);
 };
 
