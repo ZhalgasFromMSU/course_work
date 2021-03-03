@@ -4,18 +4,18 @@
 #include <vector>
 
 
-template<typename T, T N>
+template<typename T, T& N>
 class GF;
 
-template<int N>
+template<int& N>
 class Polynomial;
 
-template<typename T, T N>
+template<typename T, T& N>
 std::ostream& operator<<(std::ostream& out, const GF<T, N>& cur) {
     return out << cur.val;
 }
 
-template<int N>
+template<int& N>
 std::ostream& operator<<(std::ostream& out, const Polynomial<N>& cur) {
     char c(0);
     for (auto i: cur.val) {
@@ -26,7 +26,7 @@ std::ostream& operator<<(std::ostream& out, const Polynomial<N>& cur) {
 }
 
 
-template<typename T, T N>
+template<typename T, T& N>
 class GF {
 private:
     T val;
@@ -138,7 +138,7 @@ public:
 };
 
 
-template<int N>
+template<int& N>
 class Polynomial {
 private:
     std::vector<GF<int, N>> val;

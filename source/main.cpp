@@ -19,7 +19,8 @@ void print(const T& a) {
 
 
 int main() {
-    constexpr Polynomial<2> base(3, 2);
-    GF<Polynomial<2>, base> inp(0);
+    static int N(3);
+    Polynomial<N> base(3, 1);
+    std::cout << base << '\n';
     return 0;
 }
