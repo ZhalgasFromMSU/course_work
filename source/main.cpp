@@ -19,9 +19,7 @@ void print(const T& a) {
 
 
 int main() {
-    GF<int, 3> a(1235), b(a * 123454231);
-    decltype(b.normal()) c(3);
-    c.asd();
-    std::cout << a + b << '\n';
+    constexpr Polynomial<2> base(3, 2);
+    GF<Polynomial<2>, base> inp(0);
     return 0;
 }
