@@ -19,8 +19,10 @@ void print(const T& a) {
 
 
 int main() {
-    static int N(3);
-    Polynomial<N> base(3, 1);
-    std::cout << base << '\n';
+    GF<int>::N = 3;
+    GF<Polynomial>::N = {1, 0, 0, 1};
+
+    auto b = Polynomial({1, 0, 8, 1, 2});
+    std::cout << b.NormalizeCoeffs() << '\n';
     return 0;
 }

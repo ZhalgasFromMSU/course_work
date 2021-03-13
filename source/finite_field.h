@@ -2,37 +2,31 @@
 
 #include <iostream>
 #include <vector>
+#include <initializer_list>
 
-
-template<typename T, T& N>
+template<typename T>
 class GF;
 
-template<int& N>
 class Polynomial;
 
-template<typename T, T& N>
-std::ostream& operator<<(std::ostream& out, const GF<T, N>& cur) {
+
+template<typename T>
+std::ostream& operator<<(std::ostream& out, const GF<T>& cur) {
     return out << cur.val;
 }
 
-template<int& N>
-std::ostream& operator<<(std::ostream& out, const Polynomial<N>& cur) {
-    char c(0);
-    for (auto i: cur.val) {
-        out << c << i;
-        c = '\t';
-    }
-    return out;
-}
+std::ostream& operator<<(std::ostream& out, const Polynomial& cur);
 
 
-template<typename T, T& N>
+template<typename T>
 class GF {
 private:
     T val;
+public:
+    static T N;
 
 private:
-    T gcd(T a, T b, T& x, T& y) const {
+    T gcd(const T& a, const T& b, T& x, T& y) const {
         if (a == 0) {
             x = 0;
             y = 1;
@@ -127,7 +121,7 @@ public:
     }
 
     bool operator==(const GF& other) const {
-        return val == other.val;
+        return this->Normal().val == other.Normal().val;
     }
 
     bool operator!=(const GF& other) const {
@@ -138,26 +132,52 @@ public:
 };
 
 
-template<int& N>
 class Polynomial {
 private:
-    std::vector<GF<int, N>> val;
+    std::vector<GF<int>> val;
 
 public:
-    constexpr Polynomial()
+    Polynomial()
         :   val(1, 0) {
     }
 
-    constexpr Polynomial(int a)
+    Polynomial(int a)
         :   val(1, a) {
     }
 
-    constexpr Polynomial(int n, int def)
+    Polynomial(int n, int def)
         :   val(n, def) {
     }
 
-    constexpr Polynomial(const std::vector<GF<int, N>>& a)
+    Polynomial(const std::vector<GF<int>>& a)
         :   val(a) {
+    }
+
+    Polynomial(std::initializer_list<GF<int>> a)
+        :   val(a) {
+    }
+
+    Polynomial& operator=(const std::vector<GF<int>>& a) {
+        val = a;
+        return *this;
+    }
+
+    Polynomial NormalCoeffs() const {
+        auto ret = *this;
+        for (auto& i: ret.val) {
+            i.Normalize();
+        }
+        int idx(0);
+        while (idx < ret.val.size() && ret.val[idx] == 0) {
+            ++idx;
+        }
+        if (idx != 0 && ret.val.size() != 1) {
+            for (int i = idx; i < ret.val.size(); ++i) {
+                ret.val[i - idx] = ret.val[i];
+            }
+            ret.val.resize(ret.val.size() - idx);
+        }
+        return ret;
     }
 
     Polynomial& NormalizeCoeffs() {
@@ -246,15 +266,32 @@ public:
     Polynomial operator%(const Polynomial& other) const {
         return ((*this) - (*this) / other * other).NormalizeCoeffs();
     }
-    
 
     bool operator==(const Polynomial& other) const {
-        return val == other.val;
+        return this->NormalCoeffs().val == other.NormalCoeffs().val;
     }
 
     bool operator!=(const Polynomial& other) const {
         return !(*this == other);
     }
 
-    friend std::ostream& operator<< <>(std::ostream& out, const Polynomial& cur);
+    friend std::ostream& operator<<(std::ostream& out, const Polynomial& cur);
 };
+
+template<>
+int GF<int>::N = 2;
+
+template<>
+Polynomial GF<Polynomial>::N = 1;
+
+
+
+std::ostream& operator<<(std::ostream& out, const Polynomial& cur) {
+    char c(0);
+    for (auto i: cur.val) {
+        out << c << i;
+        c = '\t';
+    }
+    return out;
+}
+

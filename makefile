@@ -10,3 +10,7 @@ main: $(SOURCE)/main.cpp $(SOURCE)
 
 clean:
 	rm -f ./build/*.o ./main
+
+tests: $(SOURCE)/main.cpp $(SOURCE)
+	$(MAKE) -C ./build
+	g++ $(FLAGS) $(OBJECTIVES) tests.cpp -o ./test
