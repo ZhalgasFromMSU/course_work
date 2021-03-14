@@ -9,20 +9,18 @@
 #include <algorithm>
 
 
-using TNum = Converter::TNum;
-
-
-template<typename T>
-void print(const T& a) {
-    std::copy(a.begin(), a.end(), std::ostream_iterator<int>(std::cout, " "));
-    std::cout << '\n';
-}
-
-
 int main() {
-    Polynomial prim({1, 0, 2, 2, 1, 2, 2});
     GF<int>::N = 3;
-    GF<Polynomial>::N = prim;
-    Coder a(prim);
+    Coder::q = 3;
+    Coder::m = 6;
+    Coder::k = 48;
+    Coder::t = 4;
+    Polynomial prim3({1, 0, 2, 2, 1, 2, 2});
+    Polynomial prim2({1, 0, 0, 0, 1, 1, 1, 0, 1});
+    //Polynomial prim2({1, 0, 1, 1});
+    GF<Polynomial>::N = prim3;
+
+    Coder a(prim2);
+
     return 0;
 }

@@ -20,24 +20,26 @@ public:
 
 private:
     Poly primitivePoly;
-    const Poly x;
+    const TGf x;
     std::vector<TGf> primitiveElems;
+    int fieldPower;
     std::unordered_map<TGf, int> poly2IdMap;
     std::unordered_map<int, TGf> id2PolyMap;
-    Poly generator;
+    std::vector<int> generator;
 
 public:
     Coder(Poly primitivePoly)
-        :   primitivePoly(primitivePoly)
-        ,   x({1, 0})
-        ,   generator({1}) {
-        int cur_pow = 1;
+        : primitivePoly(primitivePoly)
+        , x({1, 0})
+    {
+        int curPow = 1;
         for (int i = 1; i <= m; ++i) {
-            primitiveElems.push_back(x.Power(cur_pow));
-            cur_pow *= q;
+            primitiveElems.push_back(x.Power(curPow));
+            curPow *= q;
         }
-        cur = x;
-        for (int i = 1; i < cur_pow; ++i) {
+        fieldPower = curPow;
+        TGf cur(1);
+        for (int i = 0; i < fieldPower - 1; ++i) {
             poly2IdMap[cur] = i;
             id2PolyMap[i] = cur;
             cur *= x;
@@ -45,16 +47,36 @@ public:
         MakeGenerator();
     }
 
+    // gen = (x - alp)(x - alp^2)(x - alp^3)...(x-alp^(2t))
     void MakeGenerator() {
-        return;
+        std::vector<std::unordered_map<int, int>> ch{{{0, 1}}, {{1, -1}}};
+        for (int i = 2; i <= 2 * t; ++i) {
+            ch.push_back({});
+            for (int j = ch.size() - 1; j >= 1; --j) {
+                for (auto& [alp, cnt]: ch[j - 1]) {
+                    ch[j][(alp + i) % (fieldPower - 1)] -= cnt;
+                }
+            }
+        }
+        for (int i = 0; i <= 2 * t; ++i) {
+            TGf cur(0);
+            for (auto& [alp, cnt]: ch[i]) {
+                cur += PolyById(alp) * TGf(cnt);
+            }
+            generator.push_back(IdByPoly(cur));
+        }
     }
 
-    TGf polyById(int i) const {
-        return id2PolyMap[i];
+    TGf PolyById(int i) const {
+        return id2PolyMap.at(i);
     }
 
-    int idByPoly(const TGf& poly) const {
-        return poly2IdMap[poly];
+    int IdByPoly(const TGf& poly) const {
+        return poly2IdMap.at(poly);
+    }
+
+    const std::vector<int>& GetGenerator() const {
+        return generator;
     }
 };
 

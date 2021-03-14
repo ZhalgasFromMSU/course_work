@@ -284,6 +284,26 @@ public:
         return ((*this) - (*this) / other * other).NormalizeCoeffs();
     }
 
+    Polynomial& operator+=(const Polynomial& other) {
+        return *this = *this + other;
+    }
+
+    Polynomial& operator-=(const Polynomial& other) {
+        return *this = *this - other;
+    }
+
+    Polynomial& operator*=(const Polynomial& other) {
+        return *this = *this * other;
+    }
+
+    Polynomial& operator/=(const Polynomial& other) {
+        return *this = *this / other;
+    }
+
+    Polynomial& operator%=(const Polynomial& other) {
+        return *this = *this % other;
+    }
+
     bool operator==(const Polynomial& other) const {
         return this->NormalCoeffs().val == other.NormalCoeffs().val;
     }
