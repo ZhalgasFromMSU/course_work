@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <functional>
 #include <initializer_list>
 
 template<typename T>
@@ -59,11 +60,15 @@ public:
         :   val(a) {
     }
 
+    GF(const GF& other)
+        :   val(other.val) {
+    }
+
     GF& Normalize() {
         val = (val % N + N) % N;
         return *this;
     }
-    
+
     GF Normal() const {
         GF ret = *this;
         return ret.Normalize();
@@ -95,7 +100,7 @@ public:
         T ret = (*this).Normal().val * other.Normal().val;
         return GF(ret).Normal();
     }
-    
+
     GF operator/(const GF& other) const {
         return *this * other.Reverse();
     }
@@ -111,7 +116,7 @@ public:
     GF& operator-=(const GF& other) {
         return *this = *this - other;
     }
-    
+
     GF& operator*=(const GF& other) {
         return *this = *this * other;
     }
@@ -128,7 +133,19 @@ public:
         return !(*this == other);
     }
 
+    GF Power(int n) const {
+        if (n == 0) {
+            return GF(T(1));
+        } else if (n % 2 == 0) {
+            auto ret = Power(n / 2);
+            return ret * ret;
+        } else {
+            return Power(n - 1) * *this;
+        }
+    }
+
     friend std::ostream& operator<< <>(std::ostream& out, const GF& cur);
+    friend std::hash<GF<T>>;
 };
 
 
@@ -276,6 +293,7 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& out, const Polynomial& cur);
+    friend std::hash<Polynomial>;
 };
 
 template<>
@@ -284,7 +302,23 @@ int GF<int>::N = 2;
 template<>
 Polynomial GF<Polynomial>::N = 1;
 
+template<typename T>
+struct std::hash<GF<T>> {
+    size_t operator()(const GF<T>& gfInt) const {
+        return std::hash<T>()(gfInt.val);
+    }
+};
 
+template<>
+struct std::hash<Polynomial> {
+    size_t operator()(const Polynomial& polynomial) const {
+        size_t ret(0);
+        for (auto i: polynomial.NormalCoeffs().val) {
+            ret ^= std::hash<GF<int>>()(i);
+        }
+        return ret;
+    }
+};
 
 std::ostream& operator<<(std::ostream& out, const Polynomial& cur) {
     char c(0);

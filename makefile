@@ -4,7 +4,7 @@ OBJECTIVES = ./build/trits.o
 
 default: main
 
-main: $(SOURCE)/main.cpp $(SOURCE)
+main: $(SOURCE)/main.cpp $(SOURCE)/*
 	$(MAKE) -C ./build
 	g++ $(FLAGS) $(OBJECTIVES) $(SOURCE)/main.cpp -o ./main
 

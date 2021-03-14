@@ -1,6 +1,7 @@
 #include "trits.h"
 #include "time.h"
 #include "finite_field.h"
+#include "coder.h"
 
 #include <iostream>
 #include <vector>
@@ -19,10 +20,9 @@ void print(const T& a) {
 
 
 int main() {
+    Polynomial prim({1, 0, 2, 2, 1, 2, 2});
     GF<int>::N = 3;
-    GF<Polynomial>::N = {1, 0, 0, 1};
-
-    auto b = Polynomial({1, 0, 8, 1, 2});
-    std::cout << b.NormalizeCoeffs() << '\n';
+    GF<Polynomial>::N = prim;
+    Coder a(prim);
     return 0;
 }
